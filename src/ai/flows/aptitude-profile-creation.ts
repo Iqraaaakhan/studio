@@ -15,7 +15,7 @@ import {z} from 'genkit';
 const CreateAptitudeProfileInputSchema = z.object({
   assessmentResponses: z
     .string()
-    .describe('The responses from the user to the gamified assessment.'),
+    .describe('The responses from the user to the gamified assessment, including the chosen language.'),
 });
 export type CreateAptitudeProfileInput = z.infer<typeof CreateAptitudeProfileInputSchema>;
 
@@ -37,6 +37,7 @@ const prompt = ai.definePrompt({
   prompt: `You are an AI career coach specializing in aptitude assessments.
   Based on the user's responses to the gamified assessment, create a detailed aptitude profile.
   Summarize their strengths, weaknesses, and list suitable job categories based on the assessment results.
+  The user has requested the output in a specific language, which is included in the assessment responses. Please provide the entire output in that language ONLY.
 
   Assessment Responses: {{{assessmentResponses}}}
   `,

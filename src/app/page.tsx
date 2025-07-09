@@ -9,6 +9,13 @@ import { Progress } from '@/components/ui/progress';
 import { createAptitudeProfile } from '@/ai/flows/aptitude-profile-creation';
 import { Loader2, ArrowRight, Building, Palette, Users, BrainCircuit } from 'lucide-react';
 import Logo from '@/components/app/logo';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type Question = {
   text: string;
@@ -53,6 +60,7 @@ export default function AssessmentPage() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [language, setLanguage] = useState('en');
   const router = useRouter();
 
   const totalSteps = questions.length + 2; // Intro + questions + loading/result
@@ -76,6 +84,7 @@ export default function AssessmentPage() {
           Question 1: ${questions[0].text} - Answer: ${answers[0]}
           Question 2: ${questions[1].text} - Answer: ${answers[1]}
           Question 3: ${questions[2].text} - Answer: ${answers[2]}
+          Language: ${language}
         `;
         try {
           const result = await createAptitudeProfile({ assessmentResponses });
@@ -95,7 +104,7 @@ export default function AssessmentPage() {
       };
       processResults();
     }
-  }, [step, answers, router]);
+  }, [step, answers, router, language]);
 
   const progressValue = (step / totalSteps) * 100;
 
@@ -128,7 +137,19 @@ export default function AssessmentPage() {
             <CardTitle className="text-3xl font-bold font-headline mt-4">Welcome to SkillBridge</CardTitle>
             <CardDescription className="max-w-md">Discover your innate talents with our quick, fun assessment and unlock job opportunities tailored just for you.</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col items-center">
+          <CardContent className="flex flex-col items-center gap-4">
+            <div className="w-48">
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="hi">हिंदी (Hindi)</SelectItem>
+                  <SelectItem value="kn">ಕನ್ನಡ (Kannada)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <Button size="lg" onClick={handleStart} className="bg-accent text-accent-foreground hover:bg-accent/90">
               Start Your Journey <ArrowRight className="ml-2" />
             </Button>
