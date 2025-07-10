@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -14,6 +13,7 @@ import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
+import Logo from '@/components/app/logo';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -43,30 +43,38 @@ export default function SignupPage() {
         aptitudeProfile: null,
       });
 
-      // The AuthGuard will handle redirection.
-      // We don't need to call setLoading(false) because the component will unmount.
-
+      toast({
+          title: "Account Created!",
+          description: "Welcome to DigiDisha! Let's get started with your assessment.",
+      });
+      // The AuthGuard will handle redirection to the assessment page.
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+        title: "Sign-up Failed",
         description: error.message,
       });
-      setLoading(false); // Make sure to stop loading on error
+    } finally {
+        setLoading(false);
     }
   };
 
   if (authLoading || user) {
      return (
-        <div className="flex min-h-screen flex-col items-center justify-center">
-            <Loader2 className="h-12 w-12 animate-spin" />
+        <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>
      );
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-8">
-      <Card className="w-full max-w-sm">
+       <div className="absolute top-6 left-6">
+          <Link href="/" aria-label="Back to Home">
+            <Logo />
+          </Link>
+        </div>
+      <Card className="w-full max-w-sm shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
           <CardDescription>Join DigiDisha and unlock your potential</CardDescription>
@@ -82,6 +90,7 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="bg-background"
               />
             </div>
             <div className="space-y-2">
@@ -93,16 +102,17 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+                className="bg-background"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign Up
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/login" className="font-medium text-primary hover:underline">
+            <Link href="/login" className="font-semibold text-primary hover:underline">
               Log in
             </Link>
           </p>

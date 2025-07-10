@@ -22,7 +22,7 @@ function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang
   return (
     <div className="w-32">
       <Select value={value} onValueChange={onLanguageChange}>
-        <SelectTrigger className="bg-background/80 border-border text-foreground">
+        <SelectTrigger className="bg-card/80 border-border text-foreground">
           <SelectValue placeholder="Language" />
         </SelectTrigger>
         <SelectContent>
@@ -37,7 +37,7 @@ function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-primary/20 text-center">
+    <Card className="bg-card/80 backdrop-blur-sm border-primary/20 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="items-center">
         <div className="p-4 bg-primary/20 rounded-full text-primary">
           {icon}
@@ -72,10 +72,10 @@ export default function HomePage() {
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
     localStorage.setItem('selectedLanguage', lang);
+    // You might want to refresh or update content based on language change here
   }
 
   const handleStartAssessment = () => {
-    // The language is already saved in localStorage by handleLanguageChange
     router.push('/assessment');
   };
 
@@ -97,20 +97,21 @@ export default function HomePage() {
             <Button variant="ghost" asChild>
                 <Link href="/login">Login</Link>
             </Button>
-            <Button asChild className="hidden sm:inline-flex bg-accent text-accent-foreground hover:bg-accent/90">
-                <Link href="/signup">Get Started <ArrowRight className="ml-2" /></Link>
+            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Link href="/signup">Get Started</Link>
             </Button>
           </div>
         </div>
       </header>
 
       <main>
-        <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-white overflow-hidden">
+        <section className="relative h-[60vh] md:h-[70vh] w-full flex items-center justify-center text-white overflow-hidden">
             <Carousel 
                 className="absolute inset-0 w-full h-full"
                 plugins={[
                     Autoplay({
                       delay: 5000,
+                      stopOnInteraction: false,
                     }),
                 ]}
                 opts={{ loop: true }}
@@ -126,6 +127,7 @@ export default function HomePage() {
                                 objectFit="cover"
                                 className="object-cover" 
                                 data-ai-hint={image.hint} 
+                                priority={index === 0}
                             />
                             <div className="absolute inset-0 bg-black/50" />
                         </div>
@@ -133,41 +135,41 @@ export default function HomePage() {
                     ))}
                 </CarouselContent>
             </Carousel>
-            <div className="relative container text-center z-10">
-                <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tighter">
+            <div className="relative container text-center z-10 p-4">
+                <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tighter text-white">
                     Unlock Your True Potential
                 </h1>
                 <p className="mt-6 max-w-xl mx-auto text-lg text-gray-200">
                     Discover your innate talents with our quick, fun AI-powered assessment and unlock job opportunities tailored just for you.
                 </p>
                 <div className="mt-8">
-                    <Button size="lg" onClick={handleStartAssessment} className="bg-accent text-accent-foreground hover:bg-accent/90">
+                    <Button size="lg" onClick={handleStartAssessment} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg">
                         Start Your Journey <ArrowRight className="ml-2" />
                     </Button>
                 </div>
             </div>
         </section>
 
-        <section id="features" className="py-20 md:py-32 bg-secondary">
+        <section id="features" className="py-20 md:py-24 bg-background">
           <div className="container">
-            <div className="text-center mb-12">
+            <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold font-headline">How DigiDisha Works</h2>
-              <p className="mt-4 max-w-xl mx-auto text-muted-foreground">A simple, powerful path to your future career.</p>
+              <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">A simple, powerful path to your future career in three easy steps.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
                 <FeatureCard 
                     icon={<BrainCircuit className="size-8" />}
-                    title="Gamified Assessment"
+                    title="1. Gamified Assessment"
                     description="A mobile-first, vernacular-language test that identifies innate talents, presented as a fun game."
                 />
                 <FeatureCard 
                     icon={<Briefcase className="size-8" />}
-                    title="AI Job Mapping"
+                    title="2. AI Job Mapping"
                     description="Our AI maps your aptitude profile against a real-time database of local and remote job demands."
                 />
                 <FeatureCard 
                     icon={<GraduationCap className="size-8" />}
-                    title="Adaptive Micro-Learning"
+                    title="3. Adaptive Micro-Learning"
                     description="Bite-sized modules that work on any smartphone, even with patchy internet, to build skills for your matched jobs."
                 />
             </div>
@@ -175,7 +177,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="py-8 border-t border-border/40">
+      <footer className="py-8 border-t border-border/40 bg-secondary">
         <div className="container text-center text-muted-foreground text-sm">
             © {new Date().getFullYear()} DigiDisha. All rights reserved.
         </div>

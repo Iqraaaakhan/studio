@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -13,6 +12,7 @@ import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
+import Logo from '@/components/app/logo';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -32,11 +32,15 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Login Successful!",
+        description: `Welcome back, ${userCredential.user.email}`,
+      });
       // The AuthGuard will handle redirection.
     } catch (error: any) {
         let description = "An unknown error occurred. Please try again.";
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
             description = "No account found with this email, or password was incorrect. Please try again or sign up.";
         } else {
             description = error.message;
@@ -44,28 +48,33 @@ export default function LoginPage() {
 
         toast({
             variant: "destructive",
-            title: "Uh oh! Something went wrong.",
+            title: "Login Failed",
             description: description,
         });
-        setLoading(false); // Make sure to stop loading on error
+    } finally {
+        setLoading(false);
     }
-    // No setLoading(false) here on success because the component will unmount.
   };
 
   if (authLoading || user) {
      return (
-        <div className="flex min-h-screen flex-col items-center justify-center">
-            <Loader2 className="h-12 w-12 animate-spin" />
+        <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>
      );
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-8">
-      <Card className="w-full max-w-sm">
+      <div className="absolute top-6 left-6">
+        <Link href="/" aria-label="Back to Home">
+          <Logo />
+        </Link>
+      </div>
+      <Card className="w-full max-w-sm shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
-          <CardDescription>Sign in to continue to DigiDisha</CardDescription>
+          <CardDescription>Sign in to continue to your Dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -78,6 +87,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="bg-background"
               />
             </div>
             <div className="space-y-2">
@@ -88,16 +98,17 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="bg-background"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Log In
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Don't have an account?{' '}
-            <Link href="/signup" className="font-medium text-primary hover:underline">
+            Don&apos;t have an account?{' '}
+            <Link href="/signup" className="font-semibold text-primary hover:underline">
               Sign up
             </Link>
           </p>
