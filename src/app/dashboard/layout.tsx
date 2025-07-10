@@ -42,6 +42,7 @@ function LanguageSwitcher() {
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
     localStorage.setItem('selectedLanguage', lang);
+    window.dispatchEvent(new Event('language-change'));
   }
 
   return (
@@ -70,7 +71,7 @@ function TopBar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center">
             <div className="mr-4 hidden md:flex">
                 <SidebarTrigger />
@@ -116,9 +117,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
-          <div className="min-h-screen flex flex-col bg-secondary">
+          <div className="min-h-screen flex flex-col bg-secondary/30">
             <TopBar />
-            <div className="flex-1 bg-secondary">{children}</div>
+            <div className="flex-1 bg-secondary/30">{children}</div>
           </div>
         </SidebarInset>
       </SidebarProvider>

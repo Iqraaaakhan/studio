@@ -159,7 +159,7 @@ export default function AssessmentPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-8">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-secondary p-4 sm:p-8">
         <div className="absolute top-6 left-6">
             <Button variant="ghost" asChild>
                 <Link href="/">
@@ -168,7 +168,7 @@ export default function AssessmentPage() {
             </Button>
         </div>
       <div className="w-full max-w-2xl">
-        <Card className="shadow-2xl">
+        <Card className="shadow-2xl bg-background border-border/50">
           <AnimatePresence mode="wait">
             {renderContent()}
           </AnimatePresence>

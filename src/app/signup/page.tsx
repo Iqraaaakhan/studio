@@ -44,7 +44,7 @@ export default function SignupPage() {
 
       toast({
           title: "Account Created!",
-          description: "Welcome to DigiDisha! Let's get started with your assessment.",
+          description: "Welcome to DigiDisha! Taking you to the assessment...",
       });
       // The AuthGuard will now handle redirection automatically.
     } catch (error: any) {
@@ -73,7 +73,7 @@ export default function SignupPage() {
             <Logo />
           </Link>
         </div>
-      <Card className="w-full max-w-sm shadow-2xl border-border/50">
+      <Card className="w-full max-w-sm shadow-2xl border-border/50 bg-background">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
           <CardDescription>Join DigiDisha and unlock your potential</CardDescription>
@@ -102,7 +102,7 @@ export default function SignupPage() {
                 minLength={6}
               />
             </div>
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+            <Button type="submit" className="w-full bg-gradient-to-r from-primary to-purple-500 text-primary-foreground hover:opacity-90 shadow-lg" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign Up
             </Button>

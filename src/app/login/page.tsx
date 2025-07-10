@@ -71,7 +71,7 @@ export default function LoginPage() {
           <Logo />
         </Link>
       </div>
-      <Card className="w-full max-w-sm shadow-2xl border-border/50">
+      <Card className="w-full max-w-sm shadow-2xl border-border/50 bg-background">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
           <CardDescription>Sign in to continue to your Dashboard</CardDescription>
@@ -99,7 +99,7 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+            <Button type="submit" className="w-full bg-gradient-to-r from-primary to-purple-500 text-primary-foreground hover:opacity-90 shadow-lg" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Log In
             </Button>
