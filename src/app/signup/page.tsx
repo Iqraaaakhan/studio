@@ -45,8 +45,7 @@ export default function SignupPage() {
         title: "Uh oh! Something went wrong.",
         description: error.message,
       });
-    } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
