@@ -36,17 +36,15 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
+      // Create a document for the new user
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         createdAt: new Date(),
         aptitudeProfile: null,
       });
 
-      toast({
-        title: "Account Created!",
-        description: `Welcome, ${user.email}! Taking you to the assessment...`,
-      });
-      // No router.push here. The AuthGuard will handle it.
+      // The AuthGuard will handle redirection.
+      // We don't need to call setLoading(false) because the component will unmount.
 
     } catch (error: any) {
       toast({
@@ -54,8 +52,7 @@ export default function SignupPage() {
         title: "Uh oh! Something went wrong.",
         description: error.message,
       });
-    } finally {
-        setLoading(false);
+      setLoading(false); // Make sure to stop loading on error
     }
   };
 
@@ -72,7 +69,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
-          <CardDescription>Join SkillBridge and unlock your potential</CardDescription>
+          <CardDescription>Join DigiDisha and unlock your potential</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">

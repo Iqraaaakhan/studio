@@ -33,11 +33,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast({
-        title: "Login Successful",
-        description: `Welcome back!`,
-      });
-      // No router.push here. The AuthGuard will handle it.
+      // The AuthGuard will handle redirection.
     } catch (error: any) {
         let description = "An unknown error occurred. Please try again.";
         if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
@@ -51,9 +47,9 @@ export default function LoginPage() {
             title: "Uh oh! Something went wrong.",
             description: description,
         });
-    } finally {
-        setLoading(false);
+        setLoading(false); // Make sure to stop loading on error
     }
+    // No setLoading(false) here on success because the component will unmount.
   };
 
   if (authLoading || user) {
@@ -69,7 +65,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
-          <CardDescription>Sign in to continue to SkillBridge</CardDescription>
+          <CardDescription>Sign in to continue to DigiDisha</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">

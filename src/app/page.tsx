@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +22,7 @@ function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang
   return (
     <div className="w-32">
       <Select value={value} onValueChange={onLanguageChange}>
-        <SelectTrigger className="bg-transparent border-muted-foreground text-foreground">
+        <SelectTrigger className="bg-background/80 border-border text-foreground">
           <SelectValue placeholder="Language" />
         </SelectTrigger>
         <SelectContent>
@@ -62,8 +62,20 @@ export default function HomePage() {
   const router = useRouter();
   const [language, setLanguage] = useState('en');
 
+  useEffect(() => {
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang) {
+      setLanguage(savedLang);
+    }
+  }, []);
+
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
+    localStorage.setItem('selectedLanguage', lang);
+  }
+
   const handleStartAssessment = () => {
-    localStorage.setItem('selectedLanguage', language);
+    // The language is already saved in localStorage by handleLanguageChange
     router.push('/assessment');
   };
 
@@ -81,7 +93,7 @@ export default function HomePage() {
             <Link href="/dashboard" className="text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
           </nav>
           <div className="flex items-center justify-end space-x-4 flex-1">
-            <LanguageSwitcher onLanguageChange={setLanguage} value={language} />
+            <LanguageSwitcher onLanguageChange={handleLanguageChange} value={language} />
             <Button variant="ghost" asChild>
                 <Link href="/login">Login</Link>
             </Button>
@@ -136,10 +148,10 @@ export default function HomePage() {
             </div>
         </section>
 
-        <section id="features" className="py-20 md:py-32 bg-secondary/30">
+        <section id="features" className="py-20 md:py-32 bg-secondary">
           <div className="container">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline">How SkillBridge Works</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-headline">How DigiDisha Works</h2>
               <p className="mt-4 max-w-xl mx-auto text-muted-foreground">A simple, powerful path to your future career.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
@@ -165,7 +177,7 @@ export default function HomePage() {
 
       <footer className="py-8 border-t border-border/40">
         <div className="container text-center text-muted-foreground text-sm">
-            © {new Date().getFullYear()} SkillBridge. All rights reserved.
+            © {new Date().getFullYear()} DigiDisha. All rights reserved.
         </div>
       </footer>
     </div>

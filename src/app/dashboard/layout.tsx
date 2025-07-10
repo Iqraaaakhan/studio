@@ -15,7 +15,7 @@ import { SidebarNav } from '@/components/app/sidebar-nav';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Select,
   SelectContent,
@@ -31,12 +31,22 @@ import { useRouter } from 'next/navigation';
 
 function LanguageSwitcher() {
   const [language, setLanguage] = useState('en');
-  // In a real app, you'd use a context or state management to handle language changes globally.
-  // For this prototype, we'll just show the UI.
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang) {
+      setLanguage(savedLang);
+    }
+  }, []);
+
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
+    localStorage.setItem('selectedLanguage', lang);
+  }
 
   return (
     <div className="w-32">
-      <Select value={language} onValueChange={setLanguage}>
+      <Select value={language} onValueChange={handleLanguageChange}>
         <SelectTrigger className="bg-card h-9">
           <SelectValue placeholder="Language" />
         </SelectTrigger>
