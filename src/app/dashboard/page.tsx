@@ -6,18 +6,30 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Briefcase, GraduationCap, Award, ArrowRight, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/contexts/auth-context';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function DashboardPage() {
   const [aptitudeProfile, setAptitudeProfile] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const profile = localStorage.getItem('aptitudeProfile');
-      setAptitudeProfile(profile);
-      setIsLoading(false);
-    }
-  }, []);
+    const fetchProfile = async () => {
+      if (user) {
+        setIsLoading(true);
+        const userDocRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          setAptitudeProfile(docSnap.data().aptitudeProfile || null);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">

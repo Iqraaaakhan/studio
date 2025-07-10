@@ -10,6 +10,9 @@ import { createAptitudeProfile } from '@/ai/flows/aptitude-profile-creation';
 import { Loader2, ArrowRight, Building, Palette, Users, BrainCircuit } from 'lucide-react';
 import Logo from '@/components/app/logo';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/auth-context';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 type Question = {
   text: string;
@@ -56,6 +59,7 @@ export default function AssessmentPage() {
   const [loading, setLoading] = useState(false);
   const [language, setLanguage] = useState('en'); // Assuming language is passed or selected
   const router = useRouter();
+  const { user } = useAuth();
 
   const totalSteps = questions.length;
   const progressValue = ((currentQuestionIndex) / totalSteps) * 100;
@@ -77,14 +81,22 @@ export default function AssessmentPage() {
     `;
     try {
       const result = await createAptitudeProfile({ assessmentResponses });
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('aptitudeProfile', result.aptitudeProfile);
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        await updateDoc(userDocRef, {
+          aptitudeProfile: result.aptitudeProfile
+        });
       }
+      // We no longer need to use localStorage
       router.push('/dashboard');
     } catch (error) {
       console.error("Failed to generate aptitude profile:", error);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('aptitudeProfile', "Could not generate profile. Based on your answers, you seem to be a creative problem solver who enjoys collaboration.");
+      // Fallback in case of error
+      if (user) {
+         const userDocRef = doc(db, "users", user.uid);
+         await updateDoc(userDocRef, {
+            aptitudeProfile: "Could not generate profile. Based on your answers, you seem to be a creative problem solver who enjoys collaboration."
+        });
       }
       router.push('/dashboard');
     } finally {

@@ -8,6 +8,9 @@ import { jobMapping, type JobMappingOutput } from '@/ai/flows/job-mapping';
 import { Sparkles, Loader2, MapPin, Globe } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/auth-context';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 type Job = JobMappingOutput['localOpportunities'][0] | JobMappingOutput['remoteOpportunities'][0];
 
@@ -28,13 +31,20 @@ export default function JobMappingPage() {
   const [jobOpportunities, setJobOpportunities] = useState<JobMappingOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const profile = localStorage.getItem('aptitudeProfile');
-      setAptitudeProfile(profile);
-    }
-  }, []);
+    const fetchProfile = async () => {
+      if (user) {
+        const userDocRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          setAptitudeProfile(docSnap.data().aptitudeProfile || null);
+        }
+      }
+    };
+    fetchProfile();
+  }, [user]);
 
   const handleFindJobs = async () => {
     if (!aptitudeProfile) {
