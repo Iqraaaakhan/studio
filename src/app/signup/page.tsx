@@ -37,10 +37,11 @@ export default function SignupPage() {
 
       toast({
         title: "Account Created",
-        description: "Welcome to SkillBridge! Let's get started.",
+        description: "Welcome! Redirecting you to the assessment...",
       });
-      
-      // This will navigate to the assessment page after a successful signup.
+
+      // This is the key change: we trigger navigation AFTER this async function completes
+      // and the component re-renders from setLoading(false) which is in the finally block.
       router.push('/assessment');
       
     } catch (error: any) {
@@ -52,8 +53,6 @@ export default function SignupPage() {
       // Ensure loading is stopped even if there is an error
       setLoading(false);
     }
-    // No need to set loading to false here in the success case, 
-    // as the component will unmount upon successful navigation.
   };
 
   return (
