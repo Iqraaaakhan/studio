@@ -42,45 +42,41 @@ export default function SignupPage() {
     }
     setLoading(true);
     try {
-      // Create a dummy user for "Sapna"
-      if (email === 'sapna@example.com') {
-          await setDoc(doc(db, "users", 'dummy-sapna-uid'), {
-          email: 'sapna@example.com',
-          name: 'Sapna',
-          createdAt: new Date(),
-          aptitudeProfile: "Sapna is a highly motivated individual with a natural aptitude for creative problem-solving and a strong desire to learn practical skills. Her assessment indicates a high level of visual-spatial reasoning, making her an excellent candidate for design-oriented vocations. She is also diligent and detail-oriented, with a collaborative spirit. Key strengths include creativity, attention to detail, and a proactive learning attitude. She would excel in roles that involve craftsmanship, design, and financial management.",
-          certificates: [
-            {
-              title: 'Digital Literacy Basics',
-              date: 'May 20, 2024',
-              transactionHash: '0x1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f'
-            },
-            {
-              title: 'Financial Management',
-              date: 'June 15, 2024',
-              transactionHash: '0x9f8e7d6c5b4a39281706f5e4d3c2b1a0f9e8d7c6b5a49382710f9e8d7c6b5a49'
-            },
-          ]
-        });
-      }
-
-
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await setDoc(doc(db, 'users', user.uid), {
+      const userData = {
         email: user.email,
         name: name,
         createdAt: new Date(),
         aptitudeProfile: null,
         certificates: [],
-      });
+      };
+
+      // If this is Sapna's account, populate it with showcase data
+      if (email === 'sapna@example.com') {
+        userData.aptitudeProfile = "Sapna is a highly motivated individual with a natural aptitude for creative problem-solving and a strong desire to learn practical skills. Her assessment indicates a high level of visual-spatial reasoning, making her an excellent candidate for design-oriented vocations. She is also diligent and detail-oriented, with a collaborative spirit. Key strengths include creativity, attention to detail, and a proactive learning attitude. She would excel in roles that involve craftsmanship, design, and financial management.";
+        userData.certificates = [
+          {
+            title: 'Digital Literacy Basics',
+            date: 'May 20, 2024',
+            transactionHash: '0x1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f'
+          },
+          {
+            title: 'Financial Management',
+            date: 'June 15, 2024',
+            transactionHash: '0x9f8e7d6c5b4a39281706f5e4d3c2b1a0f9e8d7c6b5a49382710f9e8d7c6b5a49'
+          },
+        ];
+      }
+      
+      await setDoc(doc(db, 'users', user.uid), userData);
 
       toast({
         title: 'Account Created!',
         description: `Welcome, ${name}! Taking you to the assessment...`,
       });
-      // AuthGuard will handle the redirect
+      // The AuthGuard will handle the redirect.
     } catch (error: any) {
       let description = error.message;
       if (error.code === 'auth/email-already-in-use') {
@@ -95,58 +91,6 @@ export default function SignupPage() {
       setLoading(false);
     }
   };
-
-  const createSapnaUser = async () => {
-    setLoading(true);
-    try {
-        // This is a 'fake' user ID, but we need it to associate the doc.
-        // In a real scenario, you'd use the actual auth UID.
-        const sapnaUID = "dummy-sapna-uid-12345";
-        
-        await setDoc(doc(db, "users", sapnaUID), {
-          email: "sapna@example.com",
-          name: "Sapna",
-          createdAt: new Date(),
-          aptitudeProfile: "Sapna is a highly motivated individual with a natural aptitude for creative problem-solving and a strong desire to learn practical skills. Her assessment indicates a high level of visual-spatial reasoning, making her an excellent candidate for design-oriented vocations. She is also diligent and detail-oriented, with a collaborative spirit. Key strengths include creativity, attention to detail, and a proactive learning attitude. She would excel in roles that involve craftsmanship, design, and financial management.",
-          certificates: [
-            {
-              title: 'Digital Literacy Basics',
-              date: 'May 20, 2024',
-              transactionHash: '0x1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f'
-            },
-            {
-              title: 'Financial Management',
-              date: 'June 15, 2024',
-              transactionHash: '0x9f8e7d6c5b4a39281706f5e4d3c2b1a0f9e8d7c6b5a49382710f9e8d7c6b5a49'
-            },
-          ]
-        });
-
-        await createUserWithEmailAndPassword(auth, 'sapna@example.com', 'password123');
-
-        toast({
-          title: "Sapna's Demo User Created",
-          description: "You can now log in as sapna@example.com",
-        });
-    } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        toast({
-          variant: 'default',
-          title: "Demo User Exists",
-          description: "Sapna's demo account is ready. You can log in.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Failed to create demo user",
-          description: error.message,
-        });
-      }
-    } finally {
-        setLoading(false);
-    }
-  }
-
 
   if (authLoading || user) {
     return (
@@ -212,9 +156,6 @@ export default function SignupPage() {
               Sign Up
             </Button>
           </form>
-           <Button variant="link" onClick={createSapnaUser} className="w-full mt-2" disabled={loading}>
-                Create Sapna's Demo User
-            </Button>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <Link href="/login" className="font-semibold text-primary hover:underline">
