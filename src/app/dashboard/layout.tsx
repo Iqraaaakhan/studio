@@ -1,3 +1,5 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import {
   SidebarProvider,
@@ -6,10 +8,69 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarInset,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import Logo from '@/components/app/logo';
 import { SidebarNav } from '@/components/app/sidebar-nav';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ArrowRight } from 'lucide-react';
+
+
+function LanguageSwitcher() {
+  const [language, setLanguage] = useState('en');
+  // In a real app, you'd use a context or state management to handle language changes globally.
+  // For this prototype, we'll just show the UI.
+
+  return (
+    <div className="w-32">
+      <Select value={language} onValueChange={setLanguage}>
+        <SelectTrigger className="bg-card h-9">
+          <SelectValue placeholder="Language" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="en">English</SelectItem>
+          <SelectItem value="hi">हिंदी</SelectItem>
+          <SelectItem value="kn">ಕನ್ನಡ</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function TopBar() {
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center">
+            <div className="mr-4 hidden md:flex">
+                <SidebarTrigger />
+            </div>
+            <div className="flex flex-1 items-center justify-end space-x-4">
+                <LanguageSwitcher />
+                 <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage src="https://placehold.co/40x40.png" alt="User" data-ai-hint="person portrait" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-col hidden sm:flex">
+                      <span className="text-sm font-medium">User</span>
+                      <span className="text-xs text-muted-foreground">user@skillbridge.dev</span>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </header>
+  )
+}
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -22,21 +83,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <SidebarNav />
         </SidebarContent>
         <SidebarFooter>
-          <div className="flex items-center gap-3 p-2">
-            <Avatar>
-              <AvatarImage src="https://placehold.co/40x40.png" alt="User" data-ai-hint="person portrait" />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">User</span>
-              <span className="text-xs text-muted-foreground">user@skillbridge.dev</span>
-            </div>
-          </div>
+          <Button variant="outline" asChild>
+            <Link href="/">
+              Back to Home <ArrowRight className="ml-auto" />
+            </Link>
+          </Button>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <div className="min-h-screen">
-          {children}
+        <div className="min-h-screen flex flex-col">
+          <TopBar />
+          <div className="flex-1">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -9,7 +9,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
   { href: '/dashboard/jobs', label: 'Job Matching', icon: <Briefcase /> },
   { href: '/dashboard/learning', label: 'Learning', icon: <GraduationCap /> },
-  { href: '/dashboard/certificates', label: 'Certificates', icon: <Award /> },
+  { href: '/dashboard/certificates', label: 'Credentials', icon: <Award /> },
 ];
 
 export function SidebarNav() {
@@ -23,6 +23,7 @@ export function SidebarNav() {
             asChild
             isActive={pathname === item.href}
             className="data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
+            tooltip={item.label}
           >
             <Link href={item.href}>
               {item.icon}

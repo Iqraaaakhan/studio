@@ -35,18 +35,18 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <div className="space-y-2">
+              <div className="space-y-2 pt-4">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-3/4" />
               </div>
             ) : aptitudeProfile ? (
-              <p className="text-sm text-muted-foreground">{aptitudeProfile}</p>
+              <p className="text-sm text-muted-foreground pt-4">{aptitudeProfile}</p>
             ) : (
               <div className="text-center py-4">
                 <p className="text-sm text-muted-foreground mb-4">Complete the assessment to reveal your profile.</p>
                 <Button asChild>
-                  <Link href="/">Take Assessment</Link>
+                  <Link href="/assessment">Take Assessment</Link>
                 </Button>
               </div>
             )}

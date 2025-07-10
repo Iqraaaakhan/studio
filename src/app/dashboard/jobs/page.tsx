@@ -71,7 +71,7 @@ export default function JobMappingPage() {
             <AlertDescription>
                 We couldn't find your aptitude profile. Please complete the assessment to unlock job matching.
                 <Button asChild variant="link" className="p-1 h-auto">
-                    <Link href="/">Take Assessment</Link>
+                    <Link href="/assessment">Take Assessment</Link>
                 </Button>
             </AlertDescription>
         </Alert>
