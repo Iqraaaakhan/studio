@@ -28,6 +28,7 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
+      // Create a document for the new user in Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         createdAt: new Date(),
@@ -39,10 +40,8 @@ export default function SignupPage() {
         description: "Welcome to SkillBridge! Let's get started.",
       });
       
+      // This will navigate to the assessment page after a successful signup.
       router.push('/assessment');
-      // No need to set loading to false here, as we are navigating away.
-      // But if navigation fails for some reason, the user is stuck.
-      // It's better to let the component unmount.
       
     } catch (error: any) {
       toast({
@@ -50,11 +49,11 @@ export default function SignupPage() {
         title: "Uh oh! Something went wrong.",
         description: error.message,
       });
+      // Ensure loading is stopped even if there is an error
       setLoading(false);
     }
-    // We don't set loading to false in the success path on purpose
-    // to avoid a screen flash before navigation. However, if navigation
-    // is slow or fails, the user is stuck. Let's move the setLoading out.
+    // No need to set loading to false here in the success case, 
+    // as the component will unmount upon successful navigation.
   };
 
   return (
