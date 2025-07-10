@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, BrainCircuit, Briefcase, GraduationCap } from 'lucide-react';
 import Logo from '@/components/app/logo';
 import {
@@ -14,15 +14,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from 'next/link';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import Image from 'next/image';
+import Autoplay from "embla-carousel-autoplay"
 
-function LanguageSwitcher() {
-  const [language, setLanguage] = useState('en');
-
+function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang: string) => void; value: string }) {
   return (
     <div className="w-32">
-      <Select value={language} onValueChange={setLanguage}>
+      <Select value={value} onValueChange={onLanguageChange}>
         <SelectTrigger className="bg-transparent border-muted-foreground text-foreground">
           <SelectValue placeholder="Language" />
         </SelectTrigger>
@@ -38,14 +37,14 @@ function LanguageSwitcher() {
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
+    <Card className="bg-card/80 backdrop-blur-sm border-primary/20 text-center">
       <CardHeader className="items-center">
-        <div className="p-4 bg-primary/20 rounded-full">
+        <div className="p-4 bg-primary/20 rounded-full text-primary">
           {icon}
         </div>
         <CardTitle className="font-headline text-xl mt-4">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="text-center text-muted-foreground">
+      <CardContent className="text-muted-foreground">
         {description}
       </CardContent>
     </Card>
@@ -61,8 +60,10 @@ const carouselImages = [
 
 export default function HomePage() {
   const router = useRouter();
+  const [language, setLanguage] = useState('en');
 
   const handleStartAssessment = () => {
+    localStorage.setItem('selectedLanguage', language);
     router.push('/assessment');
   };
 
@@ -80,7 +81,7 @@ export default function HomePage() {
             <Link href="/dashboard" className="text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
           </nav>
           <div className="flex items-center justify-end space-x-4 flex-1">
-            <LanguageSwitcher />
+            <LanguageSwitcher onLanguageChange={setLanguage} value={language} />
             <Button variant="ghost" asChild>
                 <Link href="/login">Login</Link>
             </Button>
@@ -92,46 +93,45 @@ export default function HomePage() {
       </header>
 
       <main>
-        <section className="relative py-20 md:py-32">
-            <div className="container grid lg:grid-cols-2 gap-12 items-center">
-                <div className="text-center lg:text-left">
-                    <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tighter">
-                        Unlock Your True Potential
-                    </h1>
-                    <p className="mt-6 max-w-xl mx-auto lg:mx-0 text-lg text-muted-foreground">
-                        Discover your innate talents with our quick, fun AI-powered assessment and unlock job opportunities tailored just for you.
-                    </p>
-                    <div className="mt-8 flex justify-center lg:justify-start">
-                        <Button size="lg" onClick={handleStartAssessment} className="bg-accent text-accent-foreground hover:bg-accent/90">
-                            Start Your Journey <ArrowRight className="ml-2" />
-                        </Button>
-                    </div>
-                </div>
-                 <div className="relative mx-auto max-w-2xl lg:max-w-none">
-                    <Carousel className="w-full">
-                        <CarouselContent>
-                            {carouselImages.map((image, index) => (
-                            <CarouselItem key={index}>
-                                <div className="p-1">
-                                <Card>
-                                    <CardContent className="flex aspect-video items-center justify-center p-0 overflow-hidden rounded-lg">
-                                        <Image 
-                                            src={image.src} 
-                                            alt={image.alt} 
-                                            width={1200} 
-                                            height={800} 
-                                            className="object-cover" 
-                                            data-ai-hint={image.hint} 
-                                        />
-                                    </CardContent>
-                                </Card>
-                                </div>
-                            </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="left-2" />
-                        <CarouselNext className="right-2"/>
-                    </Carousel>
+        <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-white overflow-hidden">
+            <Carousel 
+                className="absolute inset-0 w-full h-full"
+                plugins={[
+                    Autoplay({
+                      delay: 5000,
+                    }),
+                ]}
+                opts={{ loop: true }}
+            >
+                <CarouselContent className="h-full">
+                    {carouselImages.map((image, index) => (
+                    <CarouselItem key={index} className="h-full">
+                        <div className="relative w-full h-full">
+                            <Image 
+                                src={image.src} 
+                                alt={image.alt} 
+                                layout="fill"
+                                objectFit="cover"
+                                className="object-cover" 
+                                data-ai-hint={image.hint} 
+                            />
+                            <div className="absolute inset-0 bg-black/50" />
+                        </div>
+                    </CarouselItem>
+                    ))}
+                </CarouselContent>
+            </Carousel>
+            <div className="relative container text-center z-10">
+                <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tighter">
+                    Unlock Your True Potential
+                </h1>
+                <p className="mt-6 max-w-xl mx-auto text-lg text-gray-200">
+                    Discover your innate talents with our quick, fun AI-powered assessment and unlock job opportunities tailored just for you.
+                </p>
+                <div className="mt-8">
+                    <Button size="lg" onClick={handleStartAssessment} className="bg-accent text-accent-foreground hover:bg-accent/90">
+                        Start Your Journey <ArrowRight className="ml-2" />
+                    </Button>
                 </div>
             </div>
         </section>
@@ -144,17 +144,17 @@ export default function HomePage() {
             </div>
             <div className="grid md:grid-cols-3 gap-8">
                 <FeatureCard 
-                    icon={<BrainCircuit className="size-8 text-primary" />}
+                    icon={<BrainCircuit className="size-8" />}
                     title="Gamified Assessment"
                     description="A mobile-first, vernacular-language test that identifies innate talents, presented as a fun game."
                 />
                 <FeatureCard 
-                    icon={<Briefcase className="size-8 text-primary" />}
+                    icon={<Briefcase className="size-8" />}
                     title="AI Job Mapping"
                     description="Our AI maps your aptitude profile against a real-time database of local and remote job demands."
                 />
                 <FeatureCard 
-                    icon={<GraduationCap className="size-8 text-primary" />}
+                    icon={<GraduationCap className="size-8" />}
                     title="Adaptive Micro-Learning"
                     description="Bite-sized modules that work on any smartphone, even with patchy internet, to build skills for your matched jobs."
                 />

@@ -57,9 +57,16 @@ export default function AssessmentPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [language, setLanguage] = useState('en'); // Assuming language is passed or selected
+  const [language, setLanguage] = useState('en');
   const router = useRouter();
   const { user } = useAuth();
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang) {
+      setLanguage(savedLang);
+    }
+  }, []);
 
   const totalSteps = questions.length;
   const progressValue = ((currentQuestionIndex) / totalSteps) * 100;
@@ -87,11 +94,9 @@ export default function AssessmentPage() {
           aptitudeProfile: result.aptitudeProfile
         });
       }
-      // We no longer need to use localStorage
       router.push('/dashboard');
     } catch (error) {
       console.error("Failed to generate aptitude profile:", error);
-      // Fallback in case of error
       if (user) {
          const userDocRef = doc(db, "users", user.uid);
          await updateDoc(userDocRef, {

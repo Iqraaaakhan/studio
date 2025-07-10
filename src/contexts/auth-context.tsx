@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -75,4 +76,3 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
 
     return <>{children}</>;
 };
-import { useRouter } from 'next/navigation';
