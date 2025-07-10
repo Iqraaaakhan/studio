@@ -28,7 +28,6 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      // Create a document for the new user in Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         createdAt: new Date(),
@@ -37,12 +36,9 @@ export default function SignupPage() {
 
       toast({
         title: "Account Created",
-        description: "Welcome! Taking you to the assessment...",
+        description: `Welcome, ${user.email}! Taking you to the assessment...`,
       });
 
-      // The AuthContext will detect the new user and handle the redirect.
-      // We just need to stop the loading spinner here.
-      // The router.push was causing the component to unmount before the state update.
       router.push('/assessment');
 
     } catch (error: any) {
@@ -51,9 +47,7 @@ export default function SignupPage() {
         title: "Uh oh! Something went wrong.",
         description: error.message,
       });
-    } finally {
-        // This will now properly execute and remove the spinner
-        setLoading(false);
+      setLoading(false);
     }
   };
 

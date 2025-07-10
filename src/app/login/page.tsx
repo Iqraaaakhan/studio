@@ -26,7 +26,7 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: "Login Successful",
-        description: "Welcome back!",
+        description: `Welcome back, ${email}!`,
       });
       router.push('/dashboard');
     } catch (error: any) {
@@ -42,7 +42,6 @@ export default function LoginPage() {
             title: "Uh oh! Something went wrong.",
             description: description,
         });
-    } finally {
         setLoading(false);
     }
   };
