@@ -37,21 +37,23 @@ export default function SignupPage() {
 
       toast({
         title: "Account Created",
-        description: "Welcome! Redirecting you to the assessment...",
+        description: "Welcome! Taking you to the assessment...",
       });
 
-      // This is the key change: we trigger navigation AFTER this async function completes
-      // and the component re-renders from setLoading(false) which is in the finally block.
+      // The AuthContext will detect the new user and handle the redirect.
+      // We just need to stop the loading spinner here.
+      // The router.push was causing the component to unmount before the state update.
       router.push('/assessment');
-      
+
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
         description: error.message,
       });
-      // Ensure loading is stopped even if there is an error
-      setLoading(false);
+    } finally {
+        // This will now properly execute and remove the spinner
+        setLoading(false);
     }
   };
 
