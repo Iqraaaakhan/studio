@@ -30,10 +30,17 @@ export default function LoginPage() {
       });
       router.push('/dashboard');
     } catch (error: any) {
+        let description = "An unknown error occurred. Please try again.";
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+            description = "No account found with this email, or password was incorrect. Please try again or sign up.";
+        } else {
+            description = error.message;
+        }
+
         toast({
             variant: "destructive",
             title: "Uh oh! Something went wrong.",
-            description: error.message,
+            description: description,
         });
     } finally {
         setLoading(false);
