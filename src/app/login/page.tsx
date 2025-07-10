@@ -15,8 +15,8 @@ import { useAuth } from '@/contexts/auth-context';
 import Logo from '@/components/app/logo';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('sapna@example.com');
+  const [password, setPassword] = useState('password123');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -74,7 +74,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm shadow-2xl border-border/50 bg-background">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
-          <CardDescription>Sign in to continue to your Dashboard</CardDescription>
+          <CardDescription>Sign in to continue to your Dashboard. Try Sapna's demo account!</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
