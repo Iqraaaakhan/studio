@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -20,6 +21,13 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, authLoading, router]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,11 +43,10 @@ export default function SignupPage() {
       });
 
       toast({
-        title: "Account Created",
+        title: "Account Created!",
         description: `Welcome, ${user.email}! Taking you to the assessment...`,
       });
-
-      router.push('/assessment');
+      // No router.push here. The AuthGuard will handle it.
 
     } catch (error: any) {
       toast({
@@ -47,9 +54,18 @@ export default function SignupPage() {
         title: "Uh oh! Something went wrong.",
         description: error.message,
       });
-      setLoading(false);
+    } finally {
+        setLoading(false);
     }
   };
+
+  if (authLoading || user) {
+     return (
+        <div className="flex min-h-screen flex-col items-center justify-center">
+            <Loader2 className="h-12 w-12 animate-spin" />
+        </div>
+     );
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-8">

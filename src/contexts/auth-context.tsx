@@ -1,10 +1,12 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 interface AuthContextType {
   user: User | null;
@@ -41,35 +43,43 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthGuard = ({ children }: { children: ReactNode }) => {
     const { user, loading } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login');
-        }
-    }, [user, loading, router]);
+        if (loading) return; // Wait until loading is finished
 
-    if (loading || !user) {
+        const isAuthPage = pathname === '/login' || pathname === '/signup';
+
+        if (!user && !isAuthPage) {
+            router.push('/login');
+            return;
+        }
+
+        if (user && isAuthPage) {
+            router.push('/dashboard');
+            return;
+        }
+
+        if (user && !isAuthPage) {
+            // Special case: if user is created but has no profile, push to assessment
+            const checkProfile = async () => {
+                const userDocRef = doc(db, 'users', user.uid);
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists() && !docSnap.data().aptitudeProfile) {
+                    if (pathname !== '/assessment') {
+                        router.push('/assessment');
+                    }
+                }
+            }
+            checkProfile();
+        }
+
+    }, [user, loading, router, pathname]);
+
+    if (loading) {
         return (
-             <div className="flex flex-col min-h-screen">
-                <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                    <div className="container flex h-14 items-center">
-                        <Skeleton className="h-8 w-32" />
-                        <div className="flex flex-1 items-center justify-end space-x-4">
-                            <Skeleton className="h-8 w-24" />
-                            <Skeleton className="h-10 w-10 rounded-full" />
-                        </div>
-                    </div>
-                </header>
-                <div className="flex-1 p-8">
-                    <div className="space-y-4">
-                        <Skeleton className="h-8 w-1/4" />
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            <Skeleton className="h-48 w-full" />
-                            <Skeleton className="h-48 w-full" />
-                            <Skeleton className="h-48 w-full" />
-                        </div>
-                    </div>
-                </div>
+             <div className="flex min-h-screen flex-col items-center justify-center">
+                <Loader2 className="h-12 w-12 animate-spin" />
             </div>
         )
     }
