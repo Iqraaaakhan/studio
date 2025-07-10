@@ -38,7 +38,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xl font-bold font-headline flex items-center gap-2">
               <Sparkles className="text-primary" />
@@ -55,7 +55,7 @@ export default function DashboardPage() {
             ) : aptitudeProfile ? (
               <p className="text-sm text-muted-foreground pt-4">{aptitudeProfile}</p>
             ) : (
-              <div className="text-center py-4">
+              <div className="text-center py-8">
                 <p className="text-sm text-muted-foreground mb-4">Complete the assessment to reveal your profile.</p>
                 <Button asChild>
                   <Link href="/assessment">Take Assessment</Link>
@@ -65,7 +65,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="font-headline">Quick Actions</CardTitle>
             <CardDescription>Continue your journey.</CardDescription>

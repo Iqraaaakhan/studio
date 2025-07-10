@@ -36,7 +36,6 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      // Create a document for the new user
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         createdAt: new Date(),
@@ -47,7 +46,7 @@ export default function SignupPage() {
           title: "Account Created!",
           description: "Welcome to DigiDisha! Let's get started with your assessment.",
       });
-      // The AuthGuard will handle redirection to the assessment page.
+      // The AuthGuard will now handle redirection automatically.
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -68,13 +67,13 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-8">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-secondary p-4 sm:p-8">
        <div className="absolute top-6 left-6">
           <Link href="/" aria-label="Back to Home">
             <Logo />
           </Link>
         </div>
-      <Card className="w-full max-w-sm shadow-xl">
+      <Card className="w-full max-w-sm shadow-2xl border-border/50">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
           <CardDescription>Join DigiDisha and unlock your potential</CardDescription>
@@ -90,7 +89,6 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-background"
               />
             </div>
             <div className="space-y-2">
@@ -102,7 +100,6 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="bg-background"
               />
             </div>
             <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>

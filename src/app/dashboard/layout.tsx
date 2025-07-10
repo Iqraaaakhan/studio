@@ -116,9 +116,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
-          <div className="min-h-screen flex flex-col bg-background">
+          <div className="min-h-screen flex flex-col bg-secondary">
             <TopBar />
-            <div className="flex-1">{children}</div>
+            <div className="flex-1 bg-secondary">{children}</div>
           </div>
         </SidebarInset>
       </SidebarProvider>

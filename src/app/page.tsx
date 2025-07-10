@@ -22,7 +22,7 @@ function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang
   return (
     <div className="w-32">
       <Select value={value} onValueChange={onLanguageChange}>
-        <SelectTrigger className="bg-card/80 border-border text-foreground">
+        <SelectTrigger className="bg-background/80 border-border text-foreground">
           <SelectValue placeholder="Language" />
         </SelectTrigger>
         <SelectContent>
@@ -37,7 +37,7 @@ function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-primary/20 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <Card className="bg-card/80 backdrop-blur-sm border-border/20 text-center shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
       <CardHeader className="items-center">
         <div className="p-4 bg-primary/20 rounded-full text-primary">
           {icon}
@@ -72,7 +72,6 @@ export default function HomePage() {
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
     localStorage.setItem('selectedLanguage', lang);
-    // You might want to refresh or update content based on language change here
   }
 
   const handleStartAssessment = () => {
@@ -123,8 +122,7 @@ export default function HomePage() {
                             <Image 
                                 src={image.src} 
                                 alt={image.alt} 
-                                layout="fill"
-                                objectFit="cover"
+                                fill
                                 className="object-cover" 
                                 data-ai-hint={image.hint} 
                                 priority={index === 0}
@@ -143,14 +141,14 @@ export default function HomePage() {
                     Discover your innate talents with our quick, fun AI-powered assessment and unlock job opportunities tailored just for you.
                 </p>
                 <div className="mt-8">
-                    <Button size="lg" onClick={handleStartAssessment} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg">
+                    <Button size="lg" onClick={handleStartAssessment} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg ring-1 ring-white/20">
                         Start Your Journey <ArrowRight className="ml-2" />
                     </Button>
                 </div>
             </div>
         </section>
 
-        <section id="features" className="py-20 md:py-24 bg-background">
+        <section id="features" className="py-20 md:py-24 bg-secondary">
           <div className="container">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold font-headline">How DigiDisha Works</h2>
@@ -177,7 +175,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="py-8 border-t border-border/40 bg-secondary">
+      <footer className="py-8 border-t border-border/40 bg-background">
         <div className="container text-center text-muted-foreground text-sm">
             © {new Date().getFullYear()} DigiDisha. All rights reserved.
         </div>
