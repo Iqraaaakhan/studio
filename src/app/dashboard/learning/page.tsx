@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -18,6 +19,8 @@ const allLearningModules = [
     description: 'Learn to use smartphones and essential apps for daily tasks.',
     icon: <Smartphone className="h-8 w-8 text-primary" />,
     image: { src: 'https://placehold.co/600x400.png', hint: 'person using phone' },
+    duration: '2 hours',
+    level: 'Beginner',
   },
   {
     id: 'financial_management',
@@ -25,6 +28,8 @@ const allLearningModules = [
     description: 'Understand budgeting, savings, and digital payment methods.',
     icon: <BarChart2 className="h-8 w-8 text-primary" />,
     image: { src: 'https://placehold.co/600x400.png', hint: 'charts graphs' },
+    duration: '3 hours',
+    level: 'Beginner',
   },
   {
     id: 'effective_communication',
@@ -32,6 +37,8 @@ const allLearningModules = [
     description: 'Improve your communication skills for better job prospects.',
     icon: <MessageSquare className="h-8 w-8 text-primary" />,
     image: { src: 'https://placehold.co/600x400.png', hint: 'people talking' },
+    duration: '4 hours',
+    level: 'Intermediate',
   },
   {
     id: 'vocational_tailoring',
@@ -39,6 +46,8 @@ const allLearningModules = [
     description: 'Master the basics of tailoring and dressmaking.',
     icon: <PenTool className="h-8 w-8 text-primary" />,
     image: { src: 'https://placehold.co/600x400.png', hint: 'sewing machine' },
+    duration: '10 hours',
+    level: 'Vocational',
   },
 ];
 
@@ -74,6 +83,37 @@ const RecommendedModuleCard = ({ title, reason, module }: { title: string; reaso
   );
 };
 
+const ModuleCard = ({ module }: { module: typeof allLearningModules[0] }) => (
+    <Card className="flex flex-col overflow-hidden">
+        <div className="relative h-40 w-full">
+            <Image 
+                src={module.image.src} 
+                alt={module.title}
+                fill
+                objectFit="cover"
+                data-ai-hint={module.image.hint}
+            />
+        </div>
+        <CardHeader>
+            <div className="flex items-start gap-4">
+            {module.icon}
+            <div className="flex-1">
+                <CardTitle className="text-lg font-headline">{module.title}</CardTitle>
+                <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2">
+                    <span>{module.level}</span>
+                    <span>&bull;</span>
+                    <span>{module.duration}</span>
+                </div>
+                <CardDescription className="mt-2">{module.description}</CardDescription>
+            </div>
+            </div>
+        </CardHeader>
+        <CardContent className="mt-auto">
+            <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90">Start Learning</Button>
+        </CardContent>
+    </Card>
+);
+
 export default function LearningPage() {
   const { user } = useAuth();
   const [aptitudeProfile, setAptitudeProfile] = useState<string | null>(null);
@@ -97,7 +137,6 @@ export default function LearningPage() {
             setRecommendedPath(result);
           } catch (error) {
             console.error("Failed to generate learning path:", error);
-            // Fallback to showing all modules if AI fails
             setRecommendedPath(null);
           }
         }
@@ -154,29 +193,7 @@ export default function LearningPage() {
       {!loading && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {allLearningModules.map((module, index) => (
-            <Card key={index} className="flex flex-col overflow-hidden">
-              <div className="relative h-40 w-full">
-                <Image 
-                  src={module.image.src} 
-                  alt={module.title}
-                  fill
-                  objectFit="cover"
-                  data-ai-hint={module.image.hint}
-                />
-              </div>
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  {module.icon}
-                  <div className="flex-1">
-                    <CardTitle className="text-lg font-headline">{module.title}</CardTitle>
-                    <CardDescription className="mt-1">{module.description}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="mt-auto">
-                <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90">Start Learning</Button>
-              </CardContent>
-            </Card>
+            <ModuleCard key={index} module={module} />
           ))}
         </div>
       )}

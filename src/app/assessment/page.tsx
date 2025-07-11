@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -93,8 +94,8 @@ export default function AssessmentPage() {
         await updateDoc(userDocRef, {
           aptitudeProfile: result.aptitudeProfile
         });
+        // The AuthGuard will handle redirection now. No need for router.push here.
       }
-      router.push('/dashboard');
     } catch (error) {
       console.error("Failed to generate aptitude profile:", error);
       if (user) {
@@ -103,8 +104,10 @@ export default function AssessmentPage() {
             aptitudeProfile: "Could not generate profile. Based on your answers, you seem to be a creative problem solver who enjoys collaboration."
         });
       }
-      router.push('/dashboard');
+      // Even on error, the AuthGuard will see the updated (fallback) profile and redirect.
     } finally {
+      // The component will be unmounted by the AuthGuard's redirection.
+      // Setting loading to false isn't strictly necessary but is good practice.
       setLoading(false);
     }
   };

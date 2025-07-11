@@ -1,15 +1,17 @@
+
 'use client';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
-import { LayoutDashboard, Briefcase, GraduationCap, Award, Home } from 'lucide-react';
+import { LayoutDashboard, Briefcase, GraduationCap, Award, Home, Handshake } from 'lucide-react';
 
 const navItems = [
   { href: '/', label: 'Home', icon: <Home /> },
   { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
   { href: '/dashboard/jobs', label: 'Job Matching', icon: <Briefcase /> },
   { href: '/dashboard/learning', label: 'Learning', icon: <GraduationCap /> },
+  { href: '/dashboard/mentorship', label: 'Mentorship', icon: <Handshake /> },
   { href: '/dashboard/certificates', label: 'Credentials', icon: <Award /> },
 ];
 
