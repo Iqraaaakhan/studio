@@ -72,11 +72,9 @@ export default function SignupPage() {
       
       await setDoc(doc(db, 'users', user.uid), userData);
 
-      toast({
-        title: 'Account Created!',
-        description: `Welcome, ${name}! Taking you to the assessment...`,
-      });
-      // The AuthGuard will handle the redirect.
+      // The AuthGuard will handle the redirect. No need to push router here.
+      // Just need to wait for the auth state to update.
+      
     } catch (error: any) {
       let description = error.message;
       if (error.code === 'auth/email-already-in-use') {
@@ -87,9 +85,9 @@ export default function SignupPage() {
         title: 'Sign-up Failed',
         description: description,
       });
-    } finally {
       setLoading(false);
     }
+    // Don't set loading to false in success case, as the page will redirect.
   };
 
   if (authLoading || user) {

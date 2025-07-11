@@ -50,7 +50,7 @@ const RecommendedModuleCard = ({ title, reason, module }: { title: string; reaso
         <Image 
           src={module.image.src} 
           alt={module.title}
-          layout="fill"
+          fill
           objectFit="cover"
           data-ai-hint={module.image.hint}
         />
@@ -159,7 +159,7 @@ export default function LearningPage() {
                 <Image 
                   src={module.image.src} 
                   alt={module.title}
-                  layout="fill"
+                  fill
                   objectFit="cover"
                   data-ai-hint={module.image.hint}
                 />

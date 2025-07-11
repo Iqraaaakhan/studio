@@ -32,12 +32,9 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      toast({
-        title: "Login Successful!",
-        description: `Welcome back, ${userCredential.user.email}`,
-      });
+      await signInWithEmailAndPassword(auth, email, password);
       // The AuthGuard will handle redirection.
+      // We don't need to call toast here as the guard will take over.
     } catch (error: any) {
         let description = "An unknown error occurred. Please try again.";
         if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
@@ -51,7 +48,6 @@ export default function LoginPage() {
             title: "Login Failed",
             description: description,
         });
-    } finally {
         setLoading(false);
     }
   };
@@ -74,7 +70,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm shadow-2xl border-border/50 bg-background">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
-          <CardDescription>Sign in to continue to your Dashboard. Try Sapna's demo account!</CardDescription>
+          <CardDescription>Sign in to continue. Try Sapna's demo account!</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
