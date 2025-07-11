@@ -152,13 +152,6 @@ export default function AssessmentPage() {
   const [language, setLanguage] = useState<LanguageKey>('en');
   const router = useRouter();
   const { user } = useAuth();
-  const [isComplete, setIsComplete] = useState(false);
-
-  useEffect(() => {
-    if (isComplete) {
-      router.push('/dashboard');
-    }
-  }, [isComplete, router]);
 
   useEffect(() => {
     const savedLang = localStorage.getItem('selectedLanguage') as LanguageKey;
@@ -213,8 +206,10 @@ export default function AssessmentPage() {
   const processResults = async (finalAnswers: any) => {
     setLoading(true);
     if (!user) {
+        // This case should be handled by AuthGuard, but as a fallback:
         setLoading(false);
-        // Handle case where user is not logged in.
+        // Maybe show a toast message to log in first
+        router.push('/login');
         return;
     }
     try {
@@ -226,6 +221,7 @@ export default function AssessmentPage() {
       await updateDoc(userDocRef, {
         aptitudeProfile: result.aptitudeProfile
       });
+      router.push('/assessment/results'); // Navigate to results page on success
     } catch (error) {
       console.error("Failed to generate aptitude profile:", error);
        // Provide a fallback profile on error
@@ -233,8 +229,7 @@ export default function AssessmentPage() {
        await updateDoc(userDocRef, {
           aptitudeProfile: "Skill Level: Explorer\nWe couldn't generate your full AI profile right now, but based on your answers, you seem to be a creative problem solver who enjoys collaboration. Please try generating your job matches on the next page!"
       });
-    } finally {
-      setIsComplete(true);
+       router.push('/assessment/results'); // Also navigate to results page on error to not get stuck
     }
   };
 

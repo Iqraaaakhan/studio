@@ -51,7 +51,7 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
         if (loading) return; // Wait until Firebase auth state is loaded
 
         const isAuthPage = pathname === '/login' || pathname === '/signup';
-        const isPublicPage = isAuthPage || pathname === '/' || pathname === '/assessment';
+        const isPublicPage = isAuthPage || pathname === '/' || pathname === '/assessment' || pathname === '/assessment/results';
 
         if (!user && !isPublicPage) {
             router.push('/login');
