@@ -51,8 +51,9 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
         if (loading) return; // Wait until Firebase auth state is loaded
 
         const isAuthPage = pathname === '/login' || pathname === '/signup';
+        const isPublicPage = isAuthPage || pathname === '/' || pathname === '/assessment';
 
-        if (!user && !isAuthPage) {
+        if (!user && !isPublicPage) {
             router.push('/login');
             setIsCheckingProfile(false);
             return;
@@ -90,6 +91,12 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
             </div>
         )
     }
+
+    // Allow access to assessment page even if not logged in (e.g. initiated from homepage)
+    if (pathname === '/assessment' && !user) {
+        return <>{children}</>
+    }
+
 
     return <>{children}</>;
 };
