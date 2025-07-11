@@ -207,9 +207,9 @@ export default function AssessmentPage() {
     setLoading(true);
     if (!user) {
         // This case should be handled by AuthGuard, but as a fallback:
-        setLoading(false);
         // Maybe show a toast message to log in first
         router.push('/login');
+        setLoading(false);
         return;
     }
     try {
