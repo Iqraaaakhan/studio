@@ -60,6 +60,9 @@ const generateLearningPathFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('AI failed to generate a learning path.');
+    }
+    return output;
   }
 );

@@ -137,7 +137,7 @@ export default function LearningPage() {
             setRecommendedPath(result);
           } catch (error) {
             console.error("Failed to generate learning path:", error);
-            setRecommendedPath(null);
+            setRecommendedPath(null); // Set to null on error to prevent crash
           }
         }
         setLoading(false);
@@ -172,7 +172,7 @@ export default function LearningPage() {
         </div>
       )}
 
-      {!loading && recommendedPath && (
+      {!loading && recommendedPath && recommendedPath.recommendedModules.length > 0 && (
         <>
           <div className="space-y-2 py-4">
              <h3 className="text-2xl font-bold font-headline tracking-tight flex items-center"><Sparkles className="mr-2 text-primary"/> Your AI-Recommended Path</h3>
