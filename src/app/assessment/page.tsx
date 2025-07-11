@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -204,29 +205,30 @@ export default function AssessmentPage() {
 
   const processResults = async (finalAnswers: any) => {
     setLoading(true);
+    if (!user) {
+        setLoading(false);
+        // Handle case where user is not logged in.
+        return;
+    }
     try {
       const result = await createAptitudeProfile({ 
         assessmentResponses: JSON.stringify(finalAnswers),
         language: language 
       });
-      if (user) {
-        const userDocRef = doc(db, "users", user.uid);
-        await updateDoc(userDocRef, {
-          aptitudeProfile: result.aptitudeProfile
-        });
-      }
-      // AuthGuard will handle redirection, no need for router.push
+      const userDocRef = doc(db, "users", user.uid);
+      await updateDoc(userDocRef, {
+        aptitudeProfile: result.aptitudeProfile
+      });
     } catch (error) {
       console.error("Failed to generate aptitude profile:", error);
-      if (user) {
-         const userDocRef = doc(db, "users", user.uid);
-         // Provide a fallback profile on error
-         await updateDoc(userDocRef, {
-            aptitudeProfile: "Skill Level: Explorer\nWe couldn't generate your full AI profile right now, but based on your answers, you seem to be a creative problem solver who enjoys collaboration. Please try generating your job matches on the next page!"
-        });
-      }
+       // Provide a fallback profile on error
+       const userDocRef = doc(db, "users", user.uid);
+       await updateDoc(userDocRef, {
+          aptitudeProfile: "Skill Level: Explorer\nWe couldn't generate your full AI profile right now, but based on your answers, you seem to be a creative problem solver who enjoys collaboration. Please try generating your job matches on the next page!"
+      });
     } finally {
-      // Don't set loading to false here, AuthGuard will unmount the component
+      // Redirect to dashboard after profile is set or fallback is set
+      router.push('/dashboard');
     }
   };
 

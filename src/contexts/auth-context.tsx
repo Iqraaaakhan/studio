@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -44,24 +45,27 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
     const { user, loading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const [isCheckingProfile, setIsCheckingProfile] = useState(true);
 
     useEffect(() => {
-        if (loading) return; // Wait until loading is finished
+        if (loading) return; // Wait until Firebase auth state is loaded
 
         const isAuthPage = pathname === '/login' || pathname === '/signup';
 
         if (!user && !isAuthPage) {
             router.push('/login');
+            setIsCheckingProfile(false);
             return;
         }
 
-        if (user && isAuthPage) {
-            router.push('/dashboard');
-            return;
-        }
+        if (user) {
+            if(isAuthPage) {
+                router.push('/dashboard');
+                setIsCheckingProfile(false);
+                return;
+            }
 
-        if (user && !isAuthPage) {
-            // Special case: if user is created but has no profile, push to assessment
+            // If user is logged in, check for aptitude profile
             const checkProfile = async () => {
                 const userDocRef = doc(db, 'users', user.uid);
                 const docSnap = await getDoc(userDocRef);
@@ -70,16 +74,19 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
                         router.push('/assessment');
                     }
                 }
+                setIsCheckingProfile(false);
             }
             checkProfile();
+        } else {
+             setIsCheckingProfile(false);
         }
 
     }, [user, loading, router, pathname]);
 
-    if (loading) {
+    if (loading || isCheckingProfile) {
         return (
-             <div className="flex min-h-screen flex-col items-center justify-center">
-                <Loader2 className="h-12 w-12 animate-spin" />
+             <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
         )
     }
