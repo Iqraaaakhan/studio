@@ -206,10 +206,11 @@ export default function AssessmentPage() {
   const processResults = async (finalAnswers: any) => {
     setLoading(true);
     if (!user) {
+        // This case should ideally not be hit due to AuthGuard
         setLoading(false);
-        // Handle case where user is not logged in.
         return;
     }
+
     try {
       const result = await createAptitudeProfile({ 
         assessmentResponses: JSON.stringify(finalAnswers),
@@ -219,6 +220,7 @@ export default function AssessmentPage() {
       await updateDoc(userDocRef, {
         aptitudeProfile: result.aptitudeProfile
       });
+      router.push('/dashboard');
     } catch (error) {
       console.error("Failed to generate aptitude profile:", error);
        // Provide a fallback profile on error
@@ -226,8 +228,6 @@ export default function AssessmentPage() {
        await updateDoc(userDocRef, {
           aptitudeProfile: "Skill Level: Explorer\nWe couldn't generate your full AI profile right now, but based on your answers, you seem to be a creative problem solver who enjoys collaboration. Please try generating your job matches on the next page!"
       });
-    } finally {
-      // Redirect to dashboard after profile is set or fallback is set
       router.push('/dashboard');
     }
   };
