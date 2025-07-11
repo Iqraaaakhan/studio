@@ -53,7 +53,7 @@ export default function DashboardPage() {
                 <Skeleton className="h-4 w-3/4" />
               </div>
             ) : aptitudeProfile ? (
-              <p className="text-sm text-muted-foreground pt-4">{aptitudeProfile}</p>
+              <p className="text-sm text-muted-foreground pt-4 whitespace-pre-line">{aptitudeProfile}</p>
             ) : (
               <div className="text-center py-8">
                 <p className="text-sm text-muted-foreground mb-4">Complete the assessment to reveal your profile.</p>

@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 const translations = {
   en: {
@@ -40,8 +39,8 @@ const translations = {
   hi: {
     tagline: 'ग्रामीण भारत को सशक्त बनाना, एक समय में एक कौशल।',
     title: 'आपके उज्ज्वल भविष्य का रास्ता यहीं से शुरू होता है',
-    description: 'डिजिटदिशा ग्रामीण युवाओं और महिलाओं को सफल करियर बनाने के लिए व्यक्तिगत प्रशिक्षण, सत्यापित प्रमाणन और नौकरी के अवसर प्रदान करता है।',
-    cta_assessment: 'मुफ्त मूल्यांकन करें',
+    description: 'डिजिटदिशा ग्रामीण युवाओं और महिलाओं के लिए सफल करियर बनाने के लिए व्यक्तिगत प्रशिक्षण, सत्यापित प्रमाणपत्र और नौकरी के अवसर प्रदान करता है।',
+    cta_assessment: 'मुफ़्त मूल्यांकन करें',
     cta_signup: 'अभी पंजीकरण करें',
     features_title: 'डिजिटदिशा कैसे काम करता है',
     features_description: 'तीन आसान चरणों में आपके भविष्य के करियर का एक सरल, शक्तिशाली मार्ग।',
@@ -60,7 +59,7 @@ const translations = {
   kn: {
     tagline: 'ಗ್ರಾಮೀಣ ಭಾರತವನ್ನು ಸಬಲೀಕರಣಗೊಳಿಸುವುದು, ಒಂದು ಸಮಯದಲ್ಲಿ ಒಂದು ಕೌಶಲ್ಯ.',
     title: 'ನಿಮ್ಮ ಉಜ್ವಲ ಭವಿಷ್ಯದ ಹಾದಿ ಇಲ್ಲಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ',
-    description: 'ಡಿಜಿ ದಿಶಾ ಗ್ರಾಮೀC ಯುವಕರು ಮತ್ತು ಮಹಿಳೆಯರಿಗೆ ಯಶಸ್ವಿ ವೃತ್ತಿಜೀವನವನ್ನು ನಿರ್ಮಿಸಲು ವೈಯಕ್ತಿಕ ತರಬೇತಿ, ಪರಿಶೀಲಿಸಿದ ಪ್ರಮಾಣೀಕರಣಗಳು ಮತ್ತು ಉದ್ಯೋಗಾವಕಾಶಗಳನ್ನು ಒದಗಿಸುತ್ತದೆ.',
+    description: 'ಡಿಜಿ ದಿಶಾ ಗ್ರಾಮೀಣ ಯುವಕರು ಮತ್ತು ಮಹಿಳೆಯರಿಗೆ ಯಶಸ್ವಿ ವೃತ್ತಿಜೀವನವನ್ನು ನಿರ್ಮಿಸಲು ವೈಯಕ್ತಿಕ ತರಬೇತಿ, ಪರಿಶೀಲಿಸಿದ ಪ್ರಮಾಣೀಕರಣಗಳು ಮತ್ತು ಉದ್ಯೋಗಾವಕಾಶಗಳನ್ನು ಒದಗಿಸುತ್ತದೆ.',
     cta_assessment: 'ಉಚಿತ ಮೌಲ್ಯಮಾಪನ ತೆಗೆದುಕೊಳ್ಳಿ',
     cta_signup: 'ಈಗ ನೋಂದಾಯಿಸಿ',
     features_title: 'ಡಿಜಿ ದಿಶಾ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ',
@@ -77,9 +76,11 @@ const translations = {
     features: 'ವೈಶಿಷ್ಟ್ಯಗಳು',
     language: 'ಭಾಷೆ',
   }
-}
+};
 
-function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang: string) => void; value: string }) {
+type LanguageKey = keyof typeof translations;
+
+function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang: string) => void; value: LanguageKey }) {
   return (
     <div className="w-32">
       <Select value={value} onValueChange={onLanguageChange}>
@@ -114,17 +115,17 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
 
 export default function HomePage() {
   const router = useRouter();
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState<LanguageKey>('en');
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('selectedLanguage');
-    if (savedLang && translations[savedLang as keyof typeof translations]) {
+    const savedLang = localStorage.getItem('selectedLanguage') as LanguageKey;
+    if (savedLang && translations[savedLang]) {
       setLanguage(savedLang);
     }
   }, []);
 
   const handleLanguageChange = (lang: string) => {
-    setLanguage(lang);
+    setLanguage(lang as LanguageKey);
     localStorage.setItem('selectedLanguage', lang);
   }
 
@@ -132,7 +133,7 @@ export default function HomePage() {
     router.push('/assessment');
   };
   
-  const t = translations[language as keyof typeof translations];
+  const t = translations[language];
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body">
@@ -157,7 +158,7 @@ export default function HomePage() {
       </header>
 
       <main>
-        <section className="py-24 md:py-32 flex items-center justify-center text-white">
+        <section className="py-24 md:py-32 flex items-center justify-center text-white bg-gradient-to-b from-background to-secondary/30">
             <div className="container text-center z-10 p-4">
                 <div className="inline-block bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">{t.tagline}</div>
                 <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tighter text-foreground">
