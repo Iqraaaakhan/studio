@@ -9,8 +9,7 @@ import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { generateLearningPath, type LearningPathOutput } from '@/ai/flows/learning-path-generation';
-import { Skeleton } from '@/components/ui/skeleton';
+import generateLearningPath, { type LearningPathOutput } from '@/ai/flows/learning-path-generation';import { Skeleton } from '@/components/ui/skeleton';
 
 const allLearningModules = [
   // Digital Literacy
@@ -181,3 +180,4 @@ export default function LearningPage() {
     </div>
   );
 }
+//learning done
