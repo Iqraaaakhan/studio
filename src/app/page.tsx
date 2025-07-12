@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import Link from 'next/link';
 
+// --- Full Translations Object ---
 const translations = {
   en: {
     tagline: 'Empowering Rural India, One Skill at a Time.',
@@ -35,8 +36,9 @@ const translations = {
     dashboard: 'Dashboard',
     features: 'Features',
     language: 'Language',
+    for_employers: 'For Employers',
   },
-  hi: {
+  hi: { 
     tagline: 'ग्रामीण भारत को सशक्त बनाना, एक समय में एक कौशल।',
     title: 'आपके उज्ज्वल भविष्य का रास्ता यहीं से शुरू होता है',
     description: 'डिजिटदिशा ग्रामीण युवाओं और महिलाओं के लिए सफल करियर बनाने के लिए व्यक्तिगत प्रशिक्षण, सत्यापित प्रमाणपत्र और नौकरी के अवसर प्रदान करता है।',
@@ -55,8 +57,9 @@ const translations = {
     dashboard: 'डैशबोर्ड',
     features: 'विशेषताएँ',
     language: 'भाषा',
+    for_employers: 'नियोक्ताओं के लिए',
   },
-  kn: {
+  kn: { 
     tagline: 'ಗ್ರಾಮೀಣ ಭಾರತವನ್ನು ಸಬಲೀಕರಣಗೊಳಿಸುವುದು, ಒಂದು ಸಮಯದಲ್ಲಿ ಒಂದು ಕೌಶಲ್ಯ.',
     title: 'ನಿಮ್ಮ ಉಜ್ವಲ ಭವಿಷ್ಯದ ಹಾದಿ ಇಲ್ಲಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ',
     description: 'ಡಿಜಿ ದಿಶಾ ಗ್ರಾಮೀಣ ಯುವಕರು ಮತ್ತು ಮಹಿಳೆಯರಿಗೆ ಯಶಸ್ವಿ ವೃತ್ತಿಜೀವನವನ್ನು ನಿರ್ಮಿಸಲು ವೈಯಕ್ತಿಕ ತರಬೇತಿ, ಪರಿಶೀಲಿಸಿದ ಪ್ರಮಾಣೀಕರಣಗಳು ಮತ್ತು ಉದ್ಯೋಗಾವಕಾಶಗಳನ್ನು ಒದಗಿಸುತ್ತದೆ.',
@@ -75,9 +78,9 @@ const translations = {
     dashboard: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
     features: 'ವೈಶಿಷ್ಟ್ಯಗಳು',
     language: 'ಭಾಷೆ',
+    for_employers: 'ಉದ್ಯೋಗದಾತರಿಗಾಗಿ',
   }
 };
-
 type LanguageKey = keyof typeof translations;
 
 function LanguageSwitcher({ onLanguageChange, value }: { onLanguageChange: (lang: string) => void; value: LanguageKey }) {
@@ -110,7 +113,7 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
         {description}
       </CardContent>
     </Card>
-  )
+  );
 }
 
 export default function HomePage() {
@@ -127,7 +130,7 @@ export default function HomePage() {
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang as LanguageKey);
     localStorage.setItem('selectedLanguage', lang);
-  }
+  };
 
   const handleStartAssessment = () => {
     router.push('/assessment');
@@ -137,6 +140,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body">
+      {/* --- HEADER --- */}
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
           <div className="mr-4 flex">
@@ -157,7 +161,9 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* --- MAIN CONTENT WRAPPER --- */}
       <main>
+        {/* --- HERO SECTION --- */}
         <section className="py-24 md:py-32 flex items-center justify-center text-white bg-gradient-to-b from-background to-secondary/30">
             <div className="container text-center z-10 p-4">
                 <div className="inline-block bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">{t.tagline}</div>
@@ -180,6 +186,7 @@ export default function HomePage() {
             </div>
         </section>
 
+        {/* --- FEATURES SECTION --- */}
         <section id="features" className="py-20 md:py-24 bg-secondary/30">
           <div className="container">
             <div className="text-center mb-16">
@@ -207,9 +214,15 @@ export default function HomePage() {
         </section>
       </main>
 
+      {/* --- FOOTER --- */}
       <footer className="py-8 border-t border-border/40 bg-background">
         <div className="container text-center text-muted-foreground text-sm">
-            {t.footer}
+            <p>{t.footer}</p>
+            <div className="mt-4">
+              <Link href="/employer" className="text-sm font-semibold text-primary hover:underline">
+                {t.for_employers}
+              </Link>
+            </div>
         </div>
       </footer>
     </div>

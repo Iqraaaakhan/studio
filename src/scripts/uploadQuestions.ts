@@ -1,83 +1,71 @@
-const { initializeApp, getApps } = require("firebase/app");
-const { getFirestore, collection, addDoc } = require("firebase/firestore");
+import { db } from '../lib/firebase';
+import { collection, writeBatch, doc } from "firebase/firestore";
 
-// Your Firebase config here (copy from Firebase Console)
-const firebaseConfig = {
-  apiKey: "AIzaSyAqoWhRb5vY2N7urYtl32q01KQg4xjbn1I",
-  authDomain: "skillbridge-84qnn.firebaseapp.com",
-  projectId: "skillbridge-84qnn",
-  storageBucket: "skillbridge-84qnn.appspot.com",
-  messagingSenderId: "464504505620",
-  appId: "1:464504505620:web:a81ae5f53d104ef04aae01"
-};
-
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// Copy your translations and questions function here:
+// --- Put all necessary data directly in this script ---
 const translations = {
   en: {
     round1Title: "Round 1: Aptitude Test",
     round2Title: "Round 2: Digital Literacy",
     round3Title: "Round 3: Communication",
     round4Title: "Round 4: Career Preference",
-    round5Title: "Round 5: Skill Challenge",
-    resumeTitle: "Final Step: Upload Resume",
-    q1_1: "Which number completes the pattern: 2, 4, 6, __?",
-    q1_2: "Which of these is a correct email format?",
-    q2_1: "Which icon represents a web browser?",
-    q2_2: "Which button would you click to search on Google?",
-    q3_1: "Please type the following sentence exactly:",
-    q3_2: "Write 2-3 lines about yourself.",
-    q4_1: "I enjoy working on computers.",
-    q4_2: "I prefer creative tasks over analytical ones.",
-    q4_3: "What is your main career goal?",
-    q5_creative: "Which color combination do you find most appealing for a poster?",
-    q5_business: "A customer wants to buy 3 items priced at ₹15, ₹25, and ₹10. What is the total cost?",
-    q5_tech: "Which of these is a correct HTML tag for a heading?",
-    q5_freelance: "Which task would you choose for a quick freelance job?",
-    agree: "Agree",
-    neutral: "Neutral",
-    disagree: "Disagree",
-    teach: "Teach others",
-    earnHome: "Earn from home",
-    startShop: "Start a shop",
-    officeWork: "Work in an office",
-    analyzing: "Analyzing your potential...",
-    craftingProfile: "Our AI is crafting your unique aptitude profile.",
-    backToHome: "Back to Home",
-    sentenceToType: "The quick brown fox jumps over the lazy dog.",
-    resumeDescription: "Upload your resume if you have one. This is optional.",
-    upload: "Upload File",
-    skip: "Skip & Finish",
+    //... add all other English translations here
   },
-  // ...add hi and kn objects here, just like in your code...
+  hi: {
+    round1Title: "राउंड 1: योग्यता परीक्षण",
+    //... add all other Hindi translations here
+  },
+  kn: {
+    round1Title: "ಸುತ್ತು 1: ಆಪ್ಟಿಟ್ಯೂಡ್ ಪರೀಕ್ಷೆ",
+    //... add all other Kannada translations here
+  }
 };
 
-const questions = (t: typeof translations.en) => [
-  { round: t.round1Title, type: 'mcq', text: t.q1_1, options: ['7', '8', '9', '10'], answer: '8' },
-  { round: t.round1Title, type: 'mcq', text: t.q1_2, options: ['test@email', 'test.email.com', 'test@email.com', 'test@.com'], answer: 'test@email.com' },
-  { round: t.round2Title, type: 'mcq-img', text: t.q2_1, options: ['/icons/chrome.svg', '/icons/whatsapp.svg', '/icons/camera.svg', '/icons/maps.svg'], answer: '/icons/chrome.svg' },
-  { round: t.round2Title, type: 'mcq', text: t.q2_2, options: ['Search Button', 'Image Button', 'Mic Button', 'Settings Button'], answer: 'Search Button' },
-  { round: t.round3Title, type: 'typing', text: t.q3_1, sentence: t.sentenceToType },
-  { round: t.round3Title, type: 'textarea', text: t.q3_2 },
-  { round: t.round4Title, type: 'likert', text: t.q4_1, options: [t.agree, t.neutral, t.disagree] },
-  { round: t.round4Title, type: 'likert', text: t.q4_2, options: [t.agree, t.neutral, t.disagree] },
-  { round: t.round4Title, type: 'mcq', text: t.q4_3, options: [t.teach, t.earnHome, t.startShop, t.officeWork], id: 'career_goal' },
+const hardcodedQuestions = (t: any, lang: string) => [
+  { round: t.round1Title, type: 'mcq', text: "Which number completes the pattern: 2, 4, 6, __?", options: ['7', '8', '9', '10'], id: 'q1_1', language: lang },
+  // ... add ALL your other questions here, using the `t` object for round titles if needed
 ];
+// --- End of data ---
 
-async function uploadQuestions() {
-  const lang = "en";
-const t = translations[lang];
-const qs = questions(t);
-for (const q of qs) {
-  await addDoc(collection(db, "assessmentQuestions"), {
-    ...q,
-    language: lang,
-  });
-  console.log(`Uploaded: ${lang} - ${q.text}`);
-}
-console.log("All questions uploaded!");
-process.exit(0);
-}
-uploadQuestions();
+
+export const uploadQuestionsToFirestore = async () => {
+  console.log("Starting question upload...");
+  const batch = writeBatch(db);
+  
+  try {
+    // Loop through each language
+    for (const lang of ['en', 'hi', 'kn']) {
+      const t = translations[lang as keyof typeof translations];
+      
+      // Check if translations for the language exist
+      if (!t) {
+          console.error(`Translations not found for language: ${lang}`);
+          continue; // Skip this language if translations are missing
+      }
+
+      const questionsForLang = hardcodedQuestions(t, lang);
+      
+      console.log(`Preparing ${questionsForLang.length} questions for language: ${lang}`);
+
+      questionsForLang.forEach((question, index) => {
+        // Ensure every question has a valid 'round' field
+        if (typeof question.round === 'undefined') {
+            console.error(`Question with id ${question.id || index} is missing a 'round' title.`);
+            // We can either skip this question or assign a default
+            question.round = "General Round"; 
+        }
+
+        const docId = `${lang}_${question.id || `q${index}`}`;
+        const questionRef = doc(db, "assessmentQuestions", docId);
+        batch.set(questionRef, question);
+      });
+    }
+
+    await batch.commit();
+    console.log("Successfully committed batch to upload all questions!");
+    return "Success!";
+
+  } catch (error) {
+    console.error("Error uploading questions: ", error);
+    return "Failed!";
+  }
+};
